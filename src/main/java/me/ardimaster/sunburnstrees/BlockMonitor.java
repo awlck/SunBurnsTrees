@@ -40,11 +40,10 @@ public class BlockMonitor extends BukkitRunnable {
                 continue;
             }
 
-            if (block.getLightFromSky() == 15) {
+            if (block.getLightFromSky() == plugin.burnLightLevel) {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
                 plugin.monitorBlocks.remove(block);
             }
-
         }
     }
 }
