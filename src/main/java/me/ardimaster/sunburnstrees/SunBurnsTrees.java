@@ -17,9 +17,11 @@
 package me.ardimaster.sunburnstrees;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,13 +34,18 @@ import java.util.logging.Level;
  */
 public class SunBurnsTrees extends JavaPlugin {
     protected int burnLightLevel;
-    protected HashSet<Location> needsCheck = new HashSet<>();
+    protected HashSet<Block> needsCheck = new HashSet<>();
+    protected HashSet<Block> monitorBlocks = new HashSet<>();
+    private BukkitTask blockMonitor, blockChecker;
 
 
     @Override
     public void onEnable() {
         loadCfg();
         getServer().getPluginManager().registerEvents(new EventListener(this), this);
+
+        blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
+        blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5*20);
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
@@ -48,5 +49,10 @@ public class EventListener implements Listener {
         if (blockType == Material.LEAVES || blockType == Material.LEAVES_2) {
             plugin.needsCheck.add(event.getBlock());
         }
+    }
+
+    public void onBlockMine(BlockDamageEvent event) {
+        Block block = event.getBlock();
+
     }
 }
