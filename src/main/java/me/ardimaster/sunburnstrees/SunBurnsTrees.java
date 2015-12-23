@@ -17,6 +17,7 @@
 package me.ardimaster.sunburnstrees;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,14 +35,14 @@ import java.util.logging.Level;
  */
 public class SunBurnsTrees extends JavaPlugin {
     protected int burnLightLevel;
-    protected HashSet<Block> needsCheck = new HashSet<>();
-    protected HashSet<Block> monitorBlocks = new HashSet<>();
+    protected HashSet<Block> needsCheck, monitorBlocks;
     private BukkitTask blockMonitor, blockChecker;
 
 
     @Override
     public void onEnable() {
         loadCfg();
+        loadBlocks();
         getServer().getPluginManager().registerEvents(new EventListener(this), this);
 
         blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
@@ -50,7 +51,10 @@ public class SunBurnsTrees extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        blockChecker.cancel();
+        blockMonitor.cancel();
         saveCfg();
+        saveBlocks();
     }
 
     void log(Level level, String message) {
@@ -98,6 +102,54 @@ public class SunBurnsTrees extends JavaPlugin {
             config.save(configFile);
         } catch (IOException e) {
             log(Level.WARNING, "Unable to save config file!");
+        }
+    }
+
+    void loadBlocks() {
+        File blockFile = new File(getDataFolder(), "blocks.yml");
+        if (!blockFile.exists()) {
+            log(Level.INFO, "No blocks file found, using empty.");
+            needsCheck = new HashSet<>();
+            monitorBlocks = new HashSet<>();
+            return;
+        }
+
+        FileConfiguration blocks = YamlConfiguration.loadConfiguration(blockFile);
+        needsCheck = (HashSet<Block>) blocks.get("needcheck");
+        monitorBlocks = (HashSet<Block>) blocks.get("monitor");
+    }
+
+    void saveBlocks() {
+        File blocksFile = new File(getDataFolder(), "blocks.yml");
+
+        if (!Files.exists(getDataFolder().toPath())) {
+            try {
+                Files.createDirectory(getDataFolder().toPath());
+            } catch (IOException e) {
+                log(Level.WARNING, "Unable to create plugin data folder! Not saving");
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        if (!blocksFile.exists()) {
+            try {
+                blocksFile.createNewFile();
+            } catch (IOException e) {
+                log(Level.WARNING, "Unable to create empty blocks file! Not saving.");
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        FileConfiguration blocks = YamlConfiguration.loadConfiguration(blocksFile);
+        blocks.set("monitor", monitorBlocks);
+        blocks.set("needcheck", needsCheck);
+
+        try {
+            blocks.save(blocksFile);
+        } catch (IOException e) {
+            log(Level.WARNING, "Unable to save blocks file!");
         }
     }
 }
