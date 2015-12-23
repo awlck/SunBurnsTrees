@@ -34,8 +34,7 @@ public class BlockMonitor extends BukkitRunnable {
     @Override
     public void run() {
         for (Block block : plugin.monitorBlocks) {
-            boolean isLeaf = block.getType() == Material.LEAVES || block.getType() == Material.LEAVES_2;
-            if (!isLeaf) {
+            if (!plugin.burningMaterials.contains(block.getType())) {
                 plugin.monitorBlocks.remove(block);
                 continue;
             }

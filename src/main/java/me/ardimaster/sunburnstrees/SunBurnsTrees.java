@@ -16,7 +16,6 @@
 
 package me.ardimaster.sunburnstrees;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,6 +35,7 @@ import java.util.logging.Level;
 public class SunBurnsTrees extends JavaPlugin {
     protected int burnLightLevel;
     protected HashSet<Block> needsCheck, monitorBlocks;
+    protected HashSet<Material> burningMaterials;
     private BukkitTask blockMonitor, blockChecker;
 
 
@@ -66,11 +66,15 @@ public class SunBurnsTrees extends JavaPlugin {
         if (!configFile.exists()) {
             log(Level.INFO, "No configuration file found, using defaults.");
             burnLightLevel = 15;
+            burningMaterials = new HashSet<>();
+            burningMaterials.add(Material.LEAVES);
+            burningMaterials.add(Material.LEAVES_2);
             return;
         }
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         burnLightLevel = config.getInt("burnlightlevel");
+        burningMaterials = (HashSet<Material>) config.get("materials");
     }
 
     void saveCfg() {
@@ -98,6 +102,8 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         config.set("burnlightlevel", burnLightLevel);
+        config.set("materials", burningMaterials);
+
         try {
             config.save(configFile);
         } catch (IOException e) {

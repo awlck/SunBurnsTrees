@@ -46,7 +46,7 @@ public class EventListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Block block = event.getBlock();
         Material blockType = block.getType();
-        if (blockType == Material.LEAVES || blockType == Material.LEAVES_2) {
+        if (plugin.burningMaterials.contains(blockType)) {
             plugin.needsCheck.add(event.getBlock());
         }
     }

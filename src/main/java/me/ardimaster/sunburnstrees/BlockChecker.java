@@ -34,7 +34,7 @@ public class BlockChecker extends BukkitRunnable {
     @Override
     public void run() {
         for (Block block : plugin.needsCheck) {
-            if (block.getType() == Material.LEAVES || block.getType() == Material.LEAVES_2) {
+            if (plugin.burningMaterials.contains(block.getType())) {
                 if (block.getLightFromSky() == plugin.burnLightLevel) {
                     block.getRelative(BlockFace.UP).setType(Material.FIRE);
                 } else {
