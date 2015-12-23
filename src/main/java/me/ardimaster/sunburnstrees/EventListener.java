@@ -16,9 +16,15 @@
 
 package me.ardimaster.sunburnstrees;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+
+import java.util.List;
 
 /**
  * Created by ArdiMaster on 23.12.2015.
@@ -31,6 +37,16 @@ public class EventListener implements Listener {
     }
 
     public void onStructureGrow(StructureGrowEvent event) {
+        for (BlockState blockState : event.getBlocks()) {
+            plugin.needsCheck.add(blockState.getBlock());
+        }
+    }
 
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Block block = event.getBlock();
+        Material blockType = block.getType();
+        if (blockType == Material.LEAVES || blockType == Material.LEAVES_2) {
+            plugin.needsCheck.add(event.getBlock());
+        }
     }
 }
