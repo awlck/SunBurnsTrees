@@ -16,6 +16,7 @@
 
 package me.ardimaster.sunburnstrees;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.logging.Level;
 
 /**
@@ -30,6 +32,8 @@ import java.util.logging.Level;
  */
 public class SunBurnsTrees extends JavaPlugin {
     protected int burnLightLevel;
+    protected HashSet<Location> needsCheck = new HashSet<>();
+
 
     @Override
     public void onEnable() {
