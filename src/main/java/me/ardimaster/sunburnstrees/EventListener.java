@@ -54,5 +54,12 @@ public class EventListener implements Listener {
     public void onBlockMine(BlockDamageEvent event) {
         Block block = event.getBlock();
 
+        if (plugin.needsCheck.contains(block)) {
+            plugin.needsCheck.remove(block);
+        }
+
+        if (plugin.monitorBlocks.contains(block)) {
+            plugin.monitorBlocks.remove(block);
+        }
     }
 }
