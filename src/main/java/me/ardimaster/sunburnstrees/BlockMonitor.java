@@ -16,6 +16,9 @@
 
 package me.ardimaster.sunburnstrees;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -30,6 +33,18 @@ public class BlockMonitor extends BukkitRunnable {
 
     @Override
     public void run() {
-        // TODO: Code here
+        for (Block block : plugin.monitorBlocks) {
+            boolean isLeaf = block.getType() == Material.LEAVES || block.getType() == Material.LEAVES_2;
+            if (!isLeaf) {
+                plugin.monitorBlocks.remove(block);
+                continue;
+            }
+
+            if (block.getLightFromSky() == 15) {
+                block.getRelative(BlockFace.UP).setType(Material.FIRE);
+                plugin.monitorBlocks.remove(block);
+            }
+
+        }
     }
 }
