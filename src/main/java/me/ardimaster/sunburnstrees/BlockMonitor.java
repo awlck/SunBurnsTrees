@@ -38,10 +38,10 @@ public class BlockMonitor extends BukkitRunnable {
         HashSet<Block> remove = new HashSet<>();
 
         for (Block block : plugin.monitorBlocks) {
-            if (!plugin.burningMaterials.contains(block.getType())) {
+            /* if (!plugin.burningMaterials.contains(block.getType())) {
                 remove.add(block);
                 continue;
-            }
+            } */
 
             if (block.getLightFromSky() == plugin.burnLightLevel) {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
