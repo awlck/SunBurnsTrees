@@ -24,20 +24,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.world.StructureGrowEvent;
 
-import java.util.List;
-
 /**
  * Created by ArdiMaster on 23.12.2015.
  */
 public class EventListener implements Listener {
     private SunBurnsTrees plugin;
+    private boolean disabling = false;
 
-    public EventListener(SunBurnsTrees mainClass) {
+    EventListener(SunBurnsTrees mainClass) {
         this.plugin = mainClass;
     }
 
     @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
+        if (disabling) { return; }
         for (BlockState blockState : event.getBlocks()) {
             plugin.needsCheck.add(blockState.getBlock());
         }
@@ -45,6 +45,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (disabling) { return; }
         Block block = event.getBlock();
         Material blockType = block.getType();
         if (plugin.burningMaterials.contains(blockType)) {
@@ -54,6 +55,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onBlockMine(BlockBreakEvent event) {
+        if (disabling) { return; }
         Block block = event.getBlock();
 
         if (plugin.needsCheck.contains(block)) {
@@ -67,6 +69,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onLeavesDecay(LeavesDecayEvent event) {
+        if (disabling) { return; }
         Block block = event.getBlock();
 
         if (plugin.needsCheck.contains(block)) {
@@ -80,6 +83,8 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
+        if (disabling) { return; }
+
         Block block = event.getBlock();
 
         if (plugin.needsCheck.contains(block)) {
@@ -89,5 +94,9 @@ public class EventListener implements Listener {
         if (plugin.monitorBlocks.contains(block)) {
             plugin.monitorBlocks.remove(block);
         }
+    }
+
+    public void setDisabling(boolean setTo) {
+        this.disabling = setTo;
     }
 }

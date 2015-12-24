@@ -26,6 +26,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 
@@ -37,13 +38,15 @@ public class SunBurnsTrees extends JavaPlugin {
     protected HashSet<Block> needsCheck, monitorBlocks;
     protected HashSet<Material> burningMaterials;
     private BukkitTask blockMonitor, blockChecker;
+    private EventListener listener;
 
 
     @Override
     public void onEnable() {
         loadCfg();
         loadBlocks();
-        getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        listener = new EventListener(this);
+        getServer().getPluginManager().registerEvents(listener, this);
 
         blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
         blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5*20);
@@ -51,6 +54,7 @@ public class SunBurnsTrees extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        listener.setDisabling(true);
         blockChecker.cancel();
         blockMonitor.cancel();
         saveCfg();
@@ -74,7 +78,7 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         burnLightLevel = config.getInt("burnlightlevel");
-        burningMaterials = (HashSet<Material>) config.get("materials");
+        // burningMaterials = (ArrayList<Material>) config.get("materials");
     }
 
     void saveCfg() {
@@ -121,8 +125,9 @@ public class SunBurnsTrees extends JavaPlugin {
         }
 
         FileConfiguration blocks = YamlConfiguration.loadConfiguration(blockFile);
-        needsCheck = (HashSet<Block>) blocks.get("needcheck");
-        monitorBlocks = (HashSet<Block>) blocks.get("monitor");
+        // needsCheck = (ArrayList<Block>) blocks.get("needcheck");
+        // monitorBlocks = (HashSet<Block>) blocks.get("monitor");
+
     }
 
     void saveBlocks() {
