@@ -202,7 +202,7 @@ public class SunBurnsTrees extends JavaPlugin {
 
         for (int k = 0; k < i; k++) {
             Location loc = monitorSave.get(k).getLocation();
-            blocks.set("monitor." + k + ".world", loc.getWorld().toString());
+            blocks.set("monitor." + k + ".world", loc.getWorld().getName());
             blocks.set("monitor." + k + ".x", loc.getBlockX());
             blocks.set("monitor." + k + ".y", loc.getBlockY());
             blocks.set("monitor." + k + ".z", loc.getBlockZ());
@@ -210,7 +210,7 @@ public class SunBurnsTrees extends JavaPlugin {
 
         for (int l = 0; l < j; l++) {
             Location loc = checkSave.get(l).getLocation();
-            blocks.set("needcheck." + l + ".world", loc.getWorld().toString());
+            blocks.set("needcheck." + l + ".world", loc.getWorld().getName());
             blocks.set("needcheck." + l + ".x", loc.getBlockX());
             blocks.set("needcheck." + l + ".y", loc.getBlockY());
             blocks.set("needcheck." + l + ".z", loc.getBlockZ());
