@@ -48,9 +48,9 @@ public class EventListener implements Listener {
         if (disabling) { return; }
         Block block = event.getBlock();
         Material blockType = block.getType();
-        // if (plugin.burningMaterials.contains(blockType)) {
+        if (plugin.burningMaterials.contains(blockType)) {
             plugin.needsCheck.add(event.getBlock());
-        // }
+        }
     }
 
     @EventHandler

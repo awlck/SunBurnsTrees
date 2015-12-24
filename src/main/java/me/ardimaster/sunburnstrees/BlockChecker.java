@@ -37,13 +37,13 @@ public class BlockChecker extends BukkitRunnable {
     public void run() {
         HashSet<Block> remove = new HashSet<>();
         for (Block block : plugin.needsCheck) {
-            // if (plugin.burningMaterials.contains(block.getType())) {
+            if (plugin.burningMaterials.contains(block.getType())) {
                 if (block.getLightFromSky() >= plugin.burnLightLevel-1) {
                     block.getRelative(BlockFace.UP).setType(Material.FIRE);
                 } else {
                     plugin.monitorBlocks.add(block);
                 }
-            // }
+            }
 
             remove.add(block);
         }
