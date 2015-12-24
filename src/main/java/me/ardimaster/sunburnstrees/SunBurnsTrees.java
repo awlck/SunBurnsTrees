@@ -16,6 +16,7 @@
 
 package me.ardimaster.sunburnstrees;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,7 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -35,8 +38,9 @@ import java.util.logging.Level;
  */
 public class SunBurnsTrees extends JavaPlugin {
     protected int burnLightLevel;
-    protected HashSet<Block> needsCheck, monitorBlocks;
-    protected HashSet<Material> burningMaterials;
+    protected HashSet<Block> needsCheck = new HashSet<>();
+    protected HashSet<Block> monitorBlocks = new HashSet<>();
+    protected HashSet<Material> burningMaterials = new HashSet<>();
     private BukkitTask blockMonitor, blockChecker;
     private EventListener listener;
 
@@ -70,7 +74,6 @@ public class SunBurnsTrees extends JavaPlugin {
         if (!configFile.exists()) {
             log(Level.INFO, "No configuration file found, using defaults.");
             burnLightLevel = 15;
-            burningMaterials = new HashSet<>();
             burningMaterials.add(Material.LEAVES);
             burningMaterials.add(Material.LEAVES_2);
             return;
@@ -79,6 +82,11 @@ public class SunBurnsTrees extends JavaPlugin {
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         burnLightLevel = config.getInt("burnlightlevel");
         // burningMaterials = (ArrayList<Material>) config.get("materials");
+
+        List<String> loadingMaterials = config.getStringList("materials");
+        for (String mat : loadingMaterials) {
+            burningMaterials.add(Material.getMaterial(mat));
+        }
     }
 
     void saveCfg() {
@@ -106,7 +114,12 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         config.set("burnlightlevel", burnLightLevel);
-        config.set("materials", burningMaterials);
+
+        ArrayList<String> materialSave = new ArrayList<>();
+        for (Material mat : burningMaterials) {
+            materialSave.add(mat.toString());
+        }
+        config.set("materials", materialSave);
 
         try {
             config.save(configFile);
@@ -154,8 +167,39 @@ public class SunBurnsTrees extends JavaPlugin {
         }
 
         FileConfiguration blocks = YamlConfiguration.loadConfiguration(blocksFile);
-        blocks.set("monitor", monitorBlocks);
-        blocks.set("needcheck", needsCheck);
+        // blocks.set("monitor", monitorBlocks);
+        // blocks.set("needcheck", needsCheck);
+
+        HashMap<Integer, Block> monitorSave = new HashMap<>();
+        int i = 0;
+        for (Block block : monitorBlocks) {
+            monitorSave.put(i, block);
+            i++;
+        }
+
+        HashMap<Integer, Block> checkSave = new HashMap<>();
+        int j = 0;
+        for (Block block : needsCheck) {
+            checkSave.put(j, block);
+            i++;
+        }
+
+        for (int k = 0; k < i; k++) {
+            Location loc = monitorSave.get(k).getLocation();
+            blocks.set("monitor." + k + ".x", loc.getBlockX());
+            blocks.set("monitor." + k + ".y", loc.getBlockY());
+            blocks.set("monitor." + k + ".z", loc.getBlockZ());
+        }
+
+        for (int l = 0; l < j; l++) {
+            Location loc = checkSave.get(l).getLocation();
+            blocks.set("needcheck." + l + ".x", loc.getBlockX());
+            blocks.set("needcheck." + l + ".y", loc.getBlockY());
+            blocks.set("needcheck." + l + ".z", loc.getBlockZ());
+        }
+
+        blocks.set("monitor.count", i);
+        blocks.set("needcheck.count", j);
 
         try {
             blocks.save(blocksFile);
