@@ -43,7 +43,7 @@ public class BlockMonitor extends BukkitRunnable {
                 continue;
             } */
 
-            if (block.getLightFromSky() == plugin.burnLightLevel) {
+            if (block.getLightFromSky() >= plugin.burnLightLevel-1) {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
                 remove.add(block);
             }
