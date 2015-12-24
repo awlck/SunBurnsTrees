@@ -21,6 +21,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashSet;
+
 /**
  * Created by ArdiMaster on 24.12.15.
  */
@@ -33,6 +35,7 @@ public class BlockChecker extends BukkitRunnable {
 
     @Override
     public void run() {
+        HashSet<Block> remove = new HashSet<>();
         for (Block block : plugin.needsCheck) {
             if (plugin.burningMaterials.contains(block.getType())) {
                 if (block.getLightFromSky() == plugin.burnLightLevel) {
@@ -42,7 +45,15 @@ public class BlockChecker extends BukkitRunnable {
                 }
             }
 
-            plugin.needsCheck.remove(block);
+            remove.add(block);
+        }
+
+        if (!remove.isEmpty()) {
+            for (Block removeBlock : remove) {
+                plugin.needsCheck.remove(removeBlock);
+            }
+
+            remove.clear();
         }
     }
 }
