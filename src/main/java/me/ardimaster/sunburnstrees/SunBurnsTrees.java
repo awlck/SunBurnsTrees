@@ -53,7 +53,7 @@ public class SunBurnsTrees extends JavaPlugin {
         getServer().getPluginManager().registerEvents(listener, this);
 
         blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
-        blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5*20);
+        blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5 * 20);
     }
 
     @Override
@@ -132,8 +132,6 @@ public class SunBurnsTrees extends JavaPlugin {
         File blockFile = new File(getDataFolder(), "blocks.yml");
         if (!blockFile.exists()) {
             log(Level.INFO, "No blocks file found, using empty.");
-            needsCheck = new HashSet<>();
-            monitorBlocks = new HashSet<>();
             return;
         }
 
@@ -141,6 +139,24 @@ public class SunBurnsTrees extends JavaPlugin {
         // needsCheck = (ArrayList<Block>) blocks.get("needcheck");
         // monitorBlocks = (HashSet<Block>) blocks.get("monitor");
 
+        int monitorCount = blocks.getInt("monitor.count");
+        int checkCount = blocks.getInt("needcheck.count");
+
+        for (int i = 0; i < monitorCount; i++) {
+            String world = blocks.getString("monitor." + i + ".world");
+            int x = blocks.getInt("monitor." + i + ".x");
+            int y = blocks.getInt("monitor." + i + ".y");
+            int z = blocks.getInt("monitor." + i + ".z");
+            monitorBlocks.add(new Location(getServer().getWorld(world), x, y, z).getBlock());
+        }
+
+        for (int j = 0; j < checkCount; j++) {
+            String world = blocks.getString("needcheck." + j + ".world");
+            int x = blocks.getInt("needcheck." + j + ".x");
+            int y = blocks.getInt("needcheck." + j + ".y");
+            int z = blocks.getInt("needcheck." + j + ".z");
+            needsCheck.add(new Location(getServer().getWorld(world), x, y, z).getBlock());
+        }
     }
 
     void saveBlocks() {
@@ -181,11 +197,12 @@ public class SunBurnsTrees extends JavaPlugin {
         int j = 0;
         for (Block block : needsCheck) {
             checkSave.put(j, block);
-            i++;
+            j++;
         }
 
         for (int k = 0; k < i; k++) {
             Location loc = monitorSave.get(k).getLocation();
+            blocks.set("monitor." + k + ".world", loc.getWorld().toString());
             blocks.set("monitor." + k + ".x", loc.getBlockX());
             blocks.set("monitor." + k + ".y", loc.getBlockY());
             blocks.set("monitor." + k + ".z", loc.getBlockZ());
@@ -193,6 +210,7 @@ public class SunBurnsTrees extends JavaPlugin {
 
         for (int l = 0; l < j; l++) {
             Location loc = checkSave.get(l).getLocation();
+            blocks.set("needcheck." + l + ".world", loc.getWorld().toString());
             blocks.set("needcheck." + l + ".x", loc.getBlockX());
             blocks.set("needcheck." + l + ".y", loc.getBlockY());
             blocks.set("needcheck." + l + ".z", loc.getBlockZ());
