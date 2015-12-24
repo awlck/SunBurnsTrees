@@ -21,9 +21,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.List;
@@ -55,7 +53,33 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockMine(BlockDamageEvent event) {
+    public void onBlockMine(BlockBreakEvent event) {
+        Block block = event.getBlock();
+
+        if (plugin.needsCheck.contains(block)) {
+            plugin.needsCheck.remove(block);
+        }
+
+        if (plugin.monitorBlocks.contains(block)) {
+            plugin.monitorBlocks.remove(block);
+        }
+    }
+
+    @EventHandler
+    public void onLeavesDecay(LeavesDecayEvent event) {
+        Block block = event.getBlock();
+
+        if (plugin.needsCheck.contains(block)) {
+            plugin.needsCheck.remove(block);
+        }
+
+        if (plugin.monitorBlocks.contains(block)) {
+            plugin.monitorBlocks.remove(block);
+        }
+    }
+
+    @EventHandler
+    public void onBlockBurn(BlockBurnEvent event) {
         Block block = event.getBlock();
 
         if (plugin.needsCheck.contains(block)) {
