@@ -23,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.List;
@@ -37,12 +38,14 @@ public class EventListener implements Listener {
         this.plugin = mainClass;
     }
 
+    @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
         for (BlockState blockState : event.getBlocks()) {
             plugin.needsCheck.add(blockState.getBlock());
         }
     }
 
+    @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Block block = event.getBlock();
         Material blockType = block.getType();
@@ -51,6 +54,7 @@ public class EventListener implements Listener {
         }
     }
 
+    @EventHandler
     public void onBlockMine(BlockDamageEvent event) {
         Block block = event.getBlock();
 
