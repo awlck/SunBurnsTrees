@@ -16,9 +16,7 @@
 
 package me.ardimaster.sunburnstrees;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Iterator;
@@ -37,14 +35,9 @@ public class BlockChecker extends BukkitRunnable {
     public void run() {
         for (Iterator<Block> iterator = plugin.needsCheck.iterator(); iterator.hasNext(); ) {
             Block block = iterator.next();
-            long time = block.getWorld().getTime();
 
             if (plugin.burningMaterials.contains(block.getType())) {
-                if (block.getLightFromSky() >= plugin.burnLightLevel && time > 4284 && time < 7698) {
-                    block.getRelative(BlockFace.UP).setType(Material.FIRE);
-                } else {
-                    plugin.monitorBlocks.add(block);
-                }
+                plugin.monitorBlocks.add(block);
             }
 
             iterator.remove();
