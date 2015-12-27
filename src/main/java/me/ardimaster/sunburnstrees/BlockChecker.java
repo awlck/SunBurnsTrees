@@ -38,9 +38,8 @@ public class BlockChecker extends BukkitRunnable {
     public void run() {
         // HashSet<Block> remove = new HashSet<>();
 
-        Block block = null;
-        for (Iterator<Block> iterator = plugin.needsCheck.iterator(); iterator.hasNext(); block = iterator.next()) {
-            // Block block = iterator.next();
+        for (Iterator<Block> iterator = plugin.needsCheck.iterator(); iterator.hasNext();) {
+            Block block = iterator.next();
             long time = block.getWorld().getTime();
 
             if (plugin.burningMaterials.contains(block.getType())) {

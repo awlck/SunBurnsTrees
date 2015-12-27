@@ -38,8 +38,9 @@ public class BlockMonitor extends BukkitRunnable {
     public void run() {
         // HashSet<Block> remove = new HashSet<>();
 
-        Block block = null;
-        for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext(); block = iterator.next()) {
+        for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext();) {
+            Block  block = iterator.next();
+
             plugin.getServer().broadcastMessage("Checking block at x=" + block.getX() + ", y=" +
                     block.getY() + ", z=" + block.getZ() + " in world " + block.getWorld().getName() +
                     ".\n" + "LightFromSky is " + block.getLightFromSky() + ", total light level is " +
