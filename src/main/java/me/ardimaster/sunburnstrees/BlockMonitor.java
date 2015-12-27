@@ -21,7 +21,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -36,8 +35,6 @@ public class BlockMonitor extends BukkitRunnable {
 
     @Override
     public void run() {
-        // HashSet<Block> remove = new HashSet<>();
-
         for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext();) {
             Block  block = iterator.next();
 
@@ -46,7 +43,6 @@ public class BlockMonitor extends BukkitRunnable {
                     ".\n" + "LightFromSky is " + block.getLightFromSky() + ", total light level is " +
                     block.getLightLevel() + ".\n" + "Time is " + block.getWorld().getTime() + ".");
             if (!plugin.burningMaterials.contains(block.getType())) {
-                // remove.add(block);
                 iterator.remove();
                 continue;
             }
@@ -54,17 +50,8 @@ public class BlockMonitor extends BukkitRunnable {
             long time = block.getWorld().getTime();
             if (block.getLightFromSky() == plugin.burnLightLevel-1 && time > 4284 && time < 7698) {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
-                // remove.add(block);
                 iterator.remove();
             }
         }
-
-        /* if (!remove.isEmpty()) {
-            for (Block removeBlock : remove) {
-                plugin.monitorBlocks.remove(removeBlock);
-            }
-
-            remove.clear();
-        } */
     }
 }

@@ -83,7 +83,6 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         burnLightLevel = config.getInt("burnlightlevel");
-        // burningMaterials = (ArrayList<Material>) config.get("materials");
 
         List<String> loadingMaterials = config.getStringList("materials");
         for (String mat : loadingMaterials) {
@@ -138,8 +137,6 @@ public class SunBurnsTrees extends JavaPlugin {
         }
 
         FileConfiguration blocks = YamlConfiguration.loadConfiguration(blockFile);
-        // needsCheck = (ArrayList<Block>) blocks.get("needcheck");
-        // monitorBlocks = (HashSet<Block>) blocks.get("monitor");
 
         int monitorCount = blocks.getInt("monitor.count");
         int checkCount = blocks.getInt("needcheck.count");
@@ -184,8 +181,6 @@ public class SunBurnsTrees extends JavaPlugin {
 
 
         FileConfiguration blocks = YamlConfiguration.loadConfiguration(blocksFile);
-        // blocks.set("monitor", monitorBlocks);
-        // blocks.set("needcheck", needsCheck);
 
         HashMap<Integer, Block> monitorSave = new HashMap<>();
         int i = 0;
