@@ -41,7 +41,7 @@ public class SunBurnsTrees extends JavaPlugin {
     protected HashSet<Block> needsCheck = new HashSet<>();
     protected HashSet<Block> monitorBlocks = new HashSet<>();
     protected HashSet<Material> burningMaterials = new HashSet<>();
-    private BukkitTask blockMonitor, blockChecker;
+    private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
 
 
@@ -54,6 +54,7 @@ public class SunBurnsTrees extends JavaPlugin {
 
         blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
         blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5 * 20);
+        blocksSaver = new BlocksSaver(this).runTaskTimer(this, 31 * 20, 30 * 20);
     }
 
     @Override
@@ -61,6 +62,7 @@ public class SunBurnsTrees extends JavaPlugin {
         listener.setDisabling(true);
         blockChecker.cancel();
         blockMonitor.cancel();
+        blocksSaver.cancel();
         saveCfg();
         saveBlocks();
     }
