@@ -172,15 +172,14 @@ public class SunBurnsTrees extends JavaPlugin {
             }
         }
 
-        if (!blocksFile.exists()) {
-            try {
-                blocksFile.createNewFile();
-            } catch (IOException e) {
-                log(Level.WARNING, "Unable to create empty blocks file! Not saving.");
-                e.printStackTrace();
-                return;
-            }
+        try {
+            blocksFile.createNewFile();
+        } catch (IOException e) {
+            log(Level.WARNING, "Unable to create empty blocks file! Not saving.");
+            e.printStackTrace();
+            return;
         }
+
 
         FileConfiguration blocks = YamlConfiguration.loadConfiguration(blocksFile);
         // blocks.set("monitor", monitorBlocks);
