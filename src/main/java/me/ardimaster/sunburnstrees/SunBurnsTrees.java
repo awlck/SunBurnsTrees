@@ -73,7 +73,7 @@ public class SunBurnsTrees extends JavaPlugin {
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             log(Level.INFO, "No configuration file found, using defaults.");
-            burnLightLevel = 15;
+            burnLightLevel = 14;
             burningMaterials.add(Material.LEAVES);
             burningMaterials.add(Material.LEAVES_2);
             return;
