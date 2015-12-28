@@ -172,6 +172,9 @@ public class SunBurnsTrees extends JavaPlugin {
         }
 
         try {
+            if (blocksFile.exists()) {
+                blocksFile.delete();
+            }
             blocksFile.createNewFile();
         } catch (IOException e) {
             log(Level.WARNING, "Unable to create empty blocks file! Not saving.");
