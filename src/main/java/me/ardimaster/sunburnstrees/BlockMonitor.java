@@ -38,10 +38,6 @@ public class BlockMonitor extends BukkitRunnable {
         for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext();) {
             Block  block = iterator.next();
 
-            plugin.getServer().broadcastMessage("Checking block at x=" + block.getX() + ", y=" +
-                    block.getY() + ", z=" + block.getZ() + " in world " + block.getWorld().getName() +
-                    ".\n" + "LightFromSky is " + block.getLightFromSky() + ", total light level is " +
-                    block.getLightLevel() + ".\n" + "Time is " + block.getWorld().getTime() + ".");
             if (!plugin.burningMaterials.contains(block.getType())) {
                 iterator.remove();
                 continue;
