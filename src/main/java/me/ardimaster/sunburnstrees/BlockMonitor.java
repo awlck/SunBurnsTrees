@@ -44,7 +44,7 @@ public class BlockMonitor extends BukkitRunnable {
             }
 
             long time = block.getWorld().getTime();
-            if (block.getLightFromSky() == plugin.burnLightLevel && time > 4284 && time < 7698) {
+            if (block.getLightFromSky() == 14 && time > 4284 && time < 7698) {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
             }
         }

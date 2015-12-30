@@ -37,7 +37,7 @@ import java.util.logging.Level;
  * Created by ArdiMaster on 23.12.15.
  */
 public class SunBurnsTrees extends JavaPlugin {
-    protected int burnLightLevel;
+    // protected int burnLightLevel;
     protected HashSet<Block> needsCheck = new HashSet<>();
     protected HashSet<Block> monitorBlocks = new HashSet<>();
     protected HashSet<Material> burningMaterials = new HashSet<>();
@@ -75,14 +75,14 @@ public class SunBurnsTrees extends JavaPlugin {
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             log(Level.INFO, "No configuration file found, using defaults.");
-            burnLightLevel = 14;
+            // burnLightLevel = 14;
             burningMaterials.add(Material.LEAVES);
             burningMaterials.add(Material.LEAVES_2);
             return;
         }
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-        burnLightLevel = config.getInt("burnlightlevel");
+        // burnLightLevel = config.getInt("burnlightlevel");
 
         List<String> loadingMaterials = config.getStringList("materials");
         for (String mat : loadingMaterials) {
@@ -114,7 +114,7 @@ public class SunBurnsTrees extends JavaPlugin {
         }
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-        config.set("burnlightlevel", burnLightLevel);
+        // config.set("burnlightlevel", burnLightLevel);
 
         ArrayList<String> materialSave = new ArrayList<>();
         for (Material mat : burningMaterials) {
