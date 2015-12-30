@@ -23,7 +23,7 @@
 
     <groupId>me.ardimaster</groupId>
     <artifactId>SunBurnsTrees</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9</version>
 
     <build>
         <plugins>
