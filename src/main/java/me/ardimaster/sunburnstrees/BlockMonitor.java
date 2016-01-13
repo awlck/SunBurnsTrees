@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 ArdiMaster
+ * Copyright 2016 ArdiMaster
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class BlockMonitor extends BukkitRunnable {
             }
 
             long time = block.getWorld().getTime();
-            if (block.getLightFromSky() == 14 && time > 4284 && time < 7698) {
+            if (block.getLightFromSky() == 14 && time > plugin.minTime && time < plugin.maxTime) {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
             }
         }

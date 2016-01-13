@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 ArdiMaster
+ * Copyright 2016 ArdiMaster
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ public class SunBurnsTrees extends JavaPlugin {
     protected HashSet<Block> needsCheck = new HashSet<>();
     protected HashSet<Block> monitorBlocks = new HashSet<>();
     protected HashSet<Material> burningMaterials = new HashSet<>();
+    protected int minTime, maxTime = 0;
     private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
 
@@ -83,6 +84,8 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         // burnLightLevel = config.getInt("burnlightlevel");
+        minTime = config.getInt("time.min");
+        maxTime = config.getInt("time.max");
 
         List<String> loadingMaterials = config.getStringList("materials");
         for (String mat : loadingMaterials) {
@@ -115,6 +118,8 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         // config.set("burnlightlevel", burnLightLevel);
+        config.set("time.min", minTime);
+        config.set("time.max", maxTime);
 
         ArrayList<String> materialSave = new ArrayList<>();
         for (Material mat : burningMaterials) {
