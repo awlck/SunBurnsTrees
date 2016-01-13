@@ -37,7 +37,7 @@ import java.util.logging.Level;
  * Created by ArdiMaster on 23.12.15.
  */
 public class SunBurnsTrees extends JavaPlugin {
-    // protected int burnLightLevel;
+    // protected int burnLightLevel = 14;
     protected HashSet<Block> needsCheck = new HashSet<>();
     protected HashSet<Block> monitorBlocks = new HashSet<>();
     protected HashSet<Material> burningMaterials = new HashSet<>();

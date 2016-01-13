@@ -36,16 +36,27 @@ public class BlockMonitor extends BukkitRunnable {
     @Override
     public void run() {
         for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext();) {
-            Block  block = iterator.next();
+            Block block = iterator.next();
+            Material material = block.getType();
 
-            if (!plugin.burningMaterials.contains(block.getType())) {
+            if (!plugin.burningMaterials.contains(material)) {
                 iterator.remove();
                 continue;
             }
 
             long time = block.getWorld().getTime();
-            if (block.getLightFromSky() == 14 && time > plugin.minTime && time < plugin.maxTime) {
-                block.getRelative(BlockFace.UP).setType(Material.FIRE);
+            if (time > plugin.minTime && time < plugin.maxTime) {
+                continue;
+            }
+
+            if ((material == Material.LEAVES || material == Material.LEAVES_2)) {
+                if (block.getLightFromSky() == 14) {
+                    block.getRelative(BlockFace.UP).setType(Material.FIRE);
+                }
+            } else {
+                if (block.getWorld().getHighestBlockAt(block.getLocation()) == block) {
+                    block.getRelative(BlockFace.UP).setType(Material.FIRE);
+                }
             }
         }
     }
