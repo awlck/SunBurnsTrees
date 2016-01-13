@@ -41,6 +41,7 @@ public class SunBurnsTrees extends JavaPlugin {
     protected HashSet<Block> needsCheck = new HashSet<>();
     protected HashSet<Block> monitorBlocks = new HashSet<>();
     protected HashSet<Material> burningMaterials = new HashSet<>();
+    protected HashSet<Material> notSunBlockingMaterials = new HashSet<>();
     protected int minTime, maxTime = 0;
     private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
@@ -79,6 +80,9 @@ public class SunBurnsTrees extends JavaPlugin {
             // burnLightLevel = 14;
             burningMaterials.add(Material.LEAVES);
             burningMaterials.add(Material.LEAVES_2);
+
+            notSunBlockingMaterials.add(Material.GLASS);
+            notSunBlockingMaterials.add(Material.THIN_GLASS);
             return;
         }
 
@@ -87,9 +91,14 @@ public class SunBurnsTrees extends JavaPlugin {
         minTime = config.getInt("time.min");
         maxTime = config.getInt("time.max");
 
-        List<String> loadingMaterials = config.getStringList("materials");
+        List<String> loadingMaterials = config.getStringList("materials.burn");
         for (String mat : loadingMaterials) {
             burningMaterials.add(Material.getMaterial(mat));
+        }
+
+        loadingMaterials = config.getStringList("materials.nonsunblock");
+        for (String mat : loadingMaterials) {
+            notSunBlockingMaterials.add(Material.getMaterial(mat));
         }
     }
 
@@ -125,7 +134,13 @@ public class SunBurnsTrees extends JavaPlugin {
         for (Material mat : burningMaterials) {
             materialSave.add(mat.toString());
         }
-        config.set("materials", materialSave);
+        config.set("materials.burn", materialSave);
+
+        materialSave = new ArrayList<>();
+        for (Material mat : notSunBlockingMaterials) {
+            materialSave.add(mat.toString());
+        }
+        config.set("materials.nonsunblock", materialSave);
 
         try {
             config.save(configFile);

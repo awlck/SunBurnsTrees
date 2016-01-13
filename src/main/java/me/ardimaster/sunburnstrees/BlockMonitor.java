@@ -45,16 +45,27 @@ public class BlockMonitor extends BukkitRunnable {
             }
 
             long time = block.getWorld().getTime();
-            if (time > plugin.minTime && time < plugin.maxTime) {
+            if (time < plugin.minTime || time > plugin.maxTime) {
                 continue;
             }
 
-            if ((material == Material.LEAVES || material == Material.LEAVES_2)) {
-                if (block.getLightFromSky() == 14) {
-                    block.getRelative(BlockFace.UP).setType(Material.FIRE);
+            Block highestBlock = block.getWorld().getHighestBlockAt(block.getLocation());
+            Material hBlockType = highestBlock.getType();
+            if (highestBlock == block) {
+                block.getRelative(BlockFace.UP).setType(Material.FIRE);
+            } else if (plugin.notSunBlockingMaterials.contains(hBlockType)) {
+                boolean fire = true;
+                for (Block checkBlock = block.getRelative(BlockFace.UP);
+                     checkBlock != highestBlock; checkBlock = checkBlock.getRelative(BlockFace.UP)) {
+                    if (checkBlock.isEmpty()) {
+                        continue;
+                    }
+                    if (!plugin.notSunBlockingMaterials.contains(checkBlock.getType())) {
+                        fire = false;
+                        break;
+                    }
                 }
-            } else {
-                if (block.getWorld().getHighestBlockAt(block.getLocation()) == block) {
+                if (fire) {
                     block.getRelative(BlockFace.UP).setType(Material.FIRE);
                 }
             }
