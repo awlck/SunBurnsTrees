@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 ArdiMaster
+ * Copyright 2016 ArdiMaster
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,10 +37,12 @@ import java.util.logging.Level;
  * Created by ArdiMaster on 23.12.15.
  */
 public class SunBurnsTrees extends JavaPlugin {
-    // protected int burnLightLevel;
+    // protected int burnLightLevel = 14;
     protected HashSet<Block> needsCheck = new HashSet<>();
     protected HashSet<Block> monitorBlocks = new HashSet<>();
     protected HashSet<Material> burningMaterials = new HashSet<>();
+    protected HashSet<Material> notSunBlockingMaterials = new HashSet<>();
+    protected int minTime, maxTime = 0;
     private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
 
@@ -78,15 +80,25 @@ public class SunBurnsTrees extends JavaPlugin {
             // burnLightLevel = 14;
             burningMaterials.add(Material.LEAVES);
             burningMaterials.add(Material.LEAVES_2);
+
+            notSunBlockingMaterials.add(Material.GLASS);
+            notSunBlockingMaterials.add(Material.THIN_GLASS);
             return;
         }
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         // burnLightLevel = config.getInt("burnlightlevel");
+        minTime = config.getInt("time.min");
+        maxTime = config.getInt("time.max");
 
-        List<String> loadingMaterials = config.getStringList("materials");
+        List<String> loadingMaterials = config.getStringList("materials.burn");
         for (String mat : loadingMaterials) {
             burningMaterials.add(Material.getMaterial(mat));
+        }
+
+        loadingMaterials = config.getStringList("materials.nonsunblock");
+        for (String mat : loadingMaterials) {
+            notSunBlockingMaterials.add(Material.getMaterial(mat));
         }
     }
 
@@ -115,12 +127,20 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         // config.set("burnlightlevel", burnLightLevel);
+        config.set("time.min", minTime);
+        config.set("time.max", maxTime);
 
         ArrayList<String> materialSave = new ArrayList<>();
         for (Material mat : burningMaterials) {
             materialSave.add(mat.toString());
         }
-        config.set("materials", materialSave);
+        config.set("materials.burn", materialSave);
+
+        materialSave = new ArrayList<>();
+        for (Material mat : notSunBlockingMaterials) {
+            materialSave.add(mat.toString());
+        }
+        config.set("materials.nonsunblock", materialSave);
 
         try {
             config.save(configFile);
