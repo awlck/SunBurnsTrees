@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 ArdiMaster
+ * Copyright 2016 ArdiMaster
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import java.util.logging.Level;
  */
 public class SunBurnsTrees extends JavaPlugin {
     // protected int burnLightLevel;
+    protected int minTime, maxTime;
     protected HashSet<Block> needsCheck = new HashSet<>();
     protected HashSet<Block> monitorBlocks = new HashSet<>();
     protected HashSet<Material> burningMaterials = new HashSet<>();
@@ -115,6 +116,8 @@ public class SunBurnsTrees extends JavaPlugin {
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         // config.set("burnlightlevel", burnLightLevel);
+        config.set("worldTime.start", minTime);
+        config.set("worldTime.end", maxTime);
 
         ArrayList<String> materialSave = new ArrayList<>();
         for (Material mat : burningMaterials) {
