@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 ArdiMaster
+ * Copyright 2015 ArdiMaster
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,38 +36,16 @@ public class BlockMonitor extends BukkitRunnable {
     @Override
     public void run() {
         for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext();) {
-            Block block = iterator.next();
-            Material material = block.getType();
+            Block  block = iterator.next();
 
-            if (!plugin.burningMaterials.contains(material)) {
+            if (!plugin.burningMaterials.contains(block.getType())) {
                 iterator.remove();
                 continue;
             }
 
             long time = block.getWorld().getTime();
-            if (time < plugin.minTime || time > plugin.maxTime) {
-                continue;
-            }
-
-            Block highestBlock = block.getWorld().getHighestBlockAt(block.getLocation());
-            Material hBlockType = highestBlock.getType();
-            if (highestBlock == block) {
+            if (block.getLightFromSky() == 14 && time > 4284 && time < 7698) {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
-            } else if (plugin.notSunBlockingMaterials.contains(hBlockType)) {
-                boolean fire = true;
-                for (Block checkBlock = block.getRelative(BlockFace.UP);
-                     checkBlock != highestBlock; checkBlock = checkBlock.getRelative(BlockFace.UP)) {
-                    if (checkBlock.isEmpty()) {
-                        continue;
-                    }
-                    if (!plugin.notSunBlockingMaterials.contains(checkBlock.getType())) {
-                        fire = false;
-                        break;
-                    }
-                }
-                if (fire) {
-                    block.getRelative(BlockFace.UP).setType(Material.FIRE);
-                }
             }
         }
     }
