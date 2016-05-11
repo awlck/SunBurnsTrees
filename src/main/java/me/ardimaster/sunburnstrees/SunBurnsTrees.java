@@ -16,6 +16,7 @@
 
 package me.ardimaster.sunburnstrees;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,10 +39,12 @@ import java.util.logging.Level;
  */
 public class SunBurnsTrees extends JavaPlugin {
     // protected int burnLightLevel;
-    protected int minTime, maxTime;
-    protected HashSet<Block> needsCheck = new HashSet<>();
-    protected HashSet<Block> monitorBlocks = new HashSet<>();
-    protected HashSet<Material> burningMaterials = new HashSet<>();
+    int minTime, maxTime;
+    HashSet<Block> needsCheck = new HashSet<>();
+    HashSet<Block> monitorBlocks = new HashSet<>();
+    HashSet<Material> burningMaterials = new HashSet<>();
+    HashSet<Chunk> cleanChunks = new HashSet<>();
+    boolean checkChunksCompletely = false;
     private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
 
@@ -72,7 +75,7 @@ public class SunBurnsTrees extends JavaPlugin {
         getLogger().log(level, message);
     }
 
-    void loadCfg() {
+    private void loadCfg() {
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             log(Level.INFO, "No configuration file found, using defaults.");
@@ -93,13 +96,17 @@ public class SunBurnsTrees extends JavaPlugin {
             maxTime = 7698;
         }
 
+        if (config.contains("experimental.checkChunksCompletely")) {
+            checkChunksCompletely = config.getBoolean("experimental.checkChunksCompletely");
+        }
+
         List<String> loadingMaterials = config.getStringList("materials");
         for (String mat : loadingMaterials) {
             burningMaterials.add(Material.getMaterial(mat));
         }
     }
 
-    void saveCfg() {
+    private void saveCfg() {
         File configFile = new File(getDataFolder(), "config.yml");
 
         if (!Files.exists(getDataFolder().toPath())) {
@@ -127,6 +134,8 @@ public class SunBurnsTrees extends JavaPlugin {
         config.set("worldTime.start", minTime);
         config.set("worldTime.end", maxTime);
 
+        config.set("experimental.checkChunksCompletely", checkChunksCompletely);
+
         ArrayList<String> materialSave = new ArrayList<>();
         for (Material mat : burningMaterials) {
             materialSave.add(mat.toString());
@@ -140,7 +149,7 @@ public class SunBurnsTrees extends JavaPlugin {
         }
     }
 
-    void loadBlocks() {
+    private void loadBlocks() {
         File blockFile = new File(getDataFolder(), "blocks.yml");
         if (!blockFile.exists()) {
             log(Level.INFO, "No blocks file found, using empty.");
@@ -169,7 +178,7 @@ public class SunBurnsTrees extends JavaPlugin {
         }
     }
 
-    void saveBlocks() {
+    private void saveBlocks() {
         File blocksFile = new File(getDataFolder(), "blocks.yml");
 
         if (!Files.exists(getDataFolder().toPath())) {
@@ -234,5 +243,20 @@ public class SunBurnsTrees extends JavaPlugin {
         } catch (IOException e) {
             log(Level.WARNING, "Unable to save blocks file!");
         }
+    }
+
+    void addChunkSectionToNeedsCheck(String worldName, int chunkX, int chunkSectionY, int chunkZ) {
+        Chunk chunk = getServer().getWorld(worldName).getChunkAt(chunkX, chunkZ);
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    needsCheck.add(chunk.getBlock(x, (chunkSectionY * 16) + y, z));
+                }
+            }
+        }
+    }
+
+    void addCleanChunk(String worldName, int chunkX, int chunkZ) {
+        cleanChunks.add(getServer().getWorld(worldName).getChunkAt(chunkX, chunkZ));
     }
 }

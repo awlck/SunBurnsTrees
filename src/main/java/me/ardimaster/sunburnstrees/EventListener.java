@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 ArdiMaster
+ * Copyright 2016 ArdiMaster
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,7 +21,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 /**
@@ -94,6 +98,14 @@ public class EventListener implements Listener {
         if (plugin.monitorBlocks.contains(block)) {
             plugin.monitorBlocks.remove(block);
         }
+    }
+
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        if (!plugin.checkChunksCompletely || disabling) {
+            return;
+        }
+        new ChunkPrechecker(plugin, event.getChunk().getChunkSnapshot()).runTaskAsynchronously(plugin);
     }
 
     public void setDisabling(boolean setTo) {
