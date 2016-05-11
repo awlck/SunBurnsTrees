@@ -85,6 +85,14 @@ public class SunBurnsTrees extends JavaPlugin {
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         // burnLightLevel = config.getInt("burnlightlevel");
 
+        if (config.contains("worldTime.start")) {
+            minTime = config.getInt("worldTime.start");
+            maxTime = config.getInt("worldTime.end");
+        } else {
+            minTime = 4284;
+            maxTime = 7698;
+        }
+
         List<String> loadingMaterials = config.getStringList("materials");
         for (String mat : loadingMaterials) {
             burningMaterials.add(Material.getMaterial(mat));
