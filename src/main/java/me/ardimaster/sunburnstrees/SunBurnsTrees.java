@@ -79,6 +79,8 @@ public class SunBurnsTrees extends JavaPlugin {
             // burnLightLevel = 14;
             burningMaterials.add(Material.LEAVES);
             burningMaterials.add(Material.LEAVES_2);
+            minTime = 4284;
+            maxTime = 7689;
             return;
         }
 
