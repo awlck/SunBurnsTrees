@@ -45,6 +45,8 @@ public class SunBurnsTrees extends JavaPlugin {
     HashSet<Material> burningMaterials = new HashSet<>();
     HashSet<Chunk> cleanChunks = new HashSet<>();
     boolean checkChunksCompletely = false;
+    // int currentMax, currentDone = 0;
+    boolean isUpdatingChecks = false;
     private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
 
@@ -52,13 +54,13 @@ public class SunBurnsTrees extends JavaPlugin {
     @Override
     public void onEnable() {
         loadCfg();
-        loadBlocks();
+        // loadBlocks();
         listener = new EventListener(this);
         getServer().getPluginManager().registerEvents(listener, this);
 
         blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
         blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5 * 20);
-        blocksSaver = new BlocksSaver(this).runTaskTimer(this, 31 * 20, 30 * 20);
+        // blocksSaver = new BlocksSaver(this).runTaskTimer(this, 31 * 20, 30 * 20);
     }
 
     @Override
@@ -66,9 +68,9 @@ public class SunBurnsTrees extends JavaPlugin {
         listener.setDisabling(true);
         blockChecker.cancel();
         blockMonitor.cancel();
-        blocksSaver.cancel();
+        // blocksSaver.cancel();
         saveCfg();
-        saveBlocks();
+        // saveBlocks();
     }
 
     void log(Level level, String message) {
@@ -180,7 +182,7 @@ public class SunBurnsTrees extends JavaPlugin {
         }
     }
 
-    private void saveBlocks() {
+    void saveBlocks() {
         File blocksFile = new File(getDataFolder(), "blocks.yml");
 
         if (!Files.exists(getDataFolder().toPath())) {
@@ -247,18 +249,19 @@ public class SunBurnsTrees extends JavaPlugin {
         }
     }
 
-    void addChunkSectionToNeedsCheck(String worldName, int chunkX, int chunkSectionY, int chunkZ) {
+    /* void checkChunkColumn(String worldName, int chunkX,  int chunkZ, int columnX, int columnZ, int columnMaxY) {
         Chunk chunk = getServer().getWorld(worldName).getChunkAt(chunkX, chunkZ);
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                for (int z = 0; z < 16; z++) {
-                    needsCheck.add(chunk.getBlock(x, (chunkSectionY * 16) + y, z));
-                }
+        for (int y = 0; y <= columnMaxY; y++) {
+            Block block = chunk.getBlock(columnX, y, columnZ);
+            if (burningMaterials.contains(block.getType())) {
+                monitorBlocks.add(block);
             }
         }
     }
 
     void addCleanChunk(String worldName, int chunkX, int chunkZ) {
         cleanChunks.add(getServer().getWorld(worldName).getChunkAt(chunkX, chunkZ));
-    }
+        currentDone++;
+        getServer().broadcastMessage("Finished checking chunk at X=" + chunkX + " Z=" + chunkZ);
+    } */
 }

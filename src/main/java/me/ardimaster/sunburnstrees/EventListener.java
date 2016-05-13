@@ -16,6 +16,9 @@
 
 package me.ardimaster.sunburnstrees;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -101,11 +104,35 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onChunkLoad(ChunkLoadEvent event) {
+    public void onChunkLoad(ChunkLoadEvent event) throws InterruptedException {
         if (!plugin.checkChunksCompletely || disabling) {
             return;
         }
-        new ChunkPrechecker(plugin, event.getChunk().getChunkSnapshot()).runTaskAsynchronously(plugin);
+        // new ChunkPrechecker(plugin, event.getChunk().getChunkSnapshot(), plugin.currentMax).runTaskAsynchronously(plugin);
+        // plugin.currentMax++;
+
+        Chunk chunk = event.getChunk();
+        if (plugin.cleanChunks.contains(chunk)) {
+            return;
+        }
+        while (plugin.isUpdatingChecks) {
+            Thread.sleep(25);
+        }
+
+        ChunkSnapshot snapshot = chunk.getChunkSnapshot();
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int highest = snapshot.getHighestBlockYAt(x, z);
+                for (int y = 1; y <= highest; y++) {
+                    Block block = chunk.getBlock(x, y, z);
+                    if (plugin.burningMaterials.contains(block.getType())) {
+                        plugin.monitorBlocks.add(block);
+                    }
+                }
+            }
+        }
+        Bukkit.broadcastMessage("Finished checking chunk at X=" + chunk.getX() + " Z=" + chunk.getZ());
+        plugin.cleanChunks.add(chunk);
     }
 
     public void setDisabling(boolean setTo) {

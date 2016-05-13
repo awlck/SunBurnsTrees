@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 ArdiMaster
+ * Copyright 2016 ArdiMaster
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ public class BlocksSaver extends BukkitRunnable {
 
     @Override
     public void run() {
+        // if (plugin.currentDone < plugin.currentMax) { return; }
         plugin.saveBlocks();
     }
 }

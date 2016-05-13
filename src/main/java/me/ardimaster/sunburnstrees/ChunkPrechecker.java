@@ -25,20 +25,33 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class ChunkPrechecker extends BukkitRunnable {
     private SunBurnsTrees plugin;
     private ChunkSnapshot chunk;
+    private int id;
 
-    ChunkPrechecker(SunBurnsTrees mainClass, ChunkSnapshot checkChunk) {
+    ChunkPrechecker(SunBurnsTrees mainClass, ChunkSnapshot checkChunk, int runnerId) {
         plugin = mainClass;
         chunk = checkChunk;
+        id = runnerId;
     }
 
     @Override
     public void run() {
-        for (int sy = 0; sy < 16; sy++) {
-            if (!chunk.isSectionEmpty(sy)) {
-                plugin.addChunkSectionToNeedsCheck(chunk.getWorldName(), chunk.getX(), sy, chunk.getZ());
+        /* String chunkWorldName = chunk.getWorldName();
+        int chunkX = chunk.getX();
+        int chunkZ = chunk.getZ();
+        while (plugin.currentDone < id) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
-        plugin.addCleanChunk(chunk.getWorldName(), chunk.getX(), chunk.getZ());
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                plugin.checkChunkColumn(chunkWorldName, chunkX, chunkZ, x, z, chunk.getHighestBlockYAt(x, z));
+            }
+        }
+
+        plugin.addCleanChunk(chunk.getWorldName(), chunk.getX(), chunk.getZ()); */
     }
 }
