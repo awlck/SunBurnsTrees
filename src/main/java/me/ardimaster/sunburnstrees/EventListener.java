@@ -108,8 +108,6 @@ public class EventListener implements Listener {
         if (!plugin.checkChunksCompletely || disabling) {
             return;
         }
-        // new ChunkPrechecker(plugin, event.getChunk().getChunkSnapshot(), plugin.currentMax).runTaskAsynchronously(plugin);
-        // plugin.currentMax++;
 
         Chunk chunk = event.getChunk();
         if (plugin.cleanChunks.contains(chunk)) {

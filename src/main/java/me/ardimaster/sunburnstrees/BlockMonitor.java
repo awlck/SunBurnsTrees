@@ -38,8 +38,6 @@ public class BlockMonitor extends BukkitRunnable {
     public void run() {
         blocks = (HashSet<Block>) plugin.monitorBlocks.clone();
         removeBlocks = new HashSet<>();
-        //for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext();) {
-        //Block block = iterator.next();
         for (Block block : blocks) {
             if (!plugin.burningMaterials.contains(block.getType())) {
                 removeBlocks.add(block);

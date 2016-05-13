@@ -30,7 +30,6 @@ public class BlocksSaver extends BukkitRunnable {
 
     @Override
     public void run() {
-        // if (plugin.currentDone < plugin.currentMax) { return; }
         plugin.saveBlocks();
     }
 }

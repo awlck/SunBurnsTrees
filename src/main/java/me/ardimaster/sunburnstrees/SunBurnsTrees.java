@@ -45,7 +45,6 @@ public class SunBurnsTrees extends JavaPlugin {
     HashSet<Material> burningMaterials = new HashSet<>();
     HashSet<Chunk> cleanChunks = new HashSet<>();
     boolean checkChunksCompletely = false;
-    // int currentMax, currentDone = 0;
     boolean isUpdatingChecks = false;
     private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
