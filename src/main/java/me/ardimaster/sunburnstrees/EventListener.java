@@ -43,25 +43,31 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onStructureGrow(StructureGrowEvent event) {
+    public void onStructureGrow(StructureGrowEvent event) throws InterruptedException {
         if (disabling) { return; }
+        while (plugin.isUpdatingChecks) {
+            Thread.sleep(25);
+        }
         for (BlockState blockState : event.getBlocks()) {
             plugin.needsCheck.add(blockState.getBlock());
         }
     }
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
+    public void onBlockPlace(BlockPlaceEvent event) throws InterruptedException {
         if (disabling) { return; }
         Block block = event.getBlock();
         Material blockType = block.getType();
         if (plugin.burningMaterials.contains(blockType)) {
+            while (plugin.isUpdatingChecks) {
+                Thread.sleep(25);
+            }
             plugin.needsCheck.add(event.getBlock());
         }
     }
 
     @EventHandler
-    public void onBlockMine(BlockBreakEvent event) {
+    public void onBlockMine(BlockBreakEvent event) throws InterruptedException {
         if (disabling) { return; }
         Block block = event.getBlock();
 
@@ -70,12 +76,15 @@ public class EventListener implements Listener {
         }
 
         if (plugin.monitorBlocks.contains(block)) {
+            while (plugin.isUpdatingChecks) {
+                Thread.sleep(25);
+            }
             plugin.monitorBlocks.remove(block);
         }
     }
 
     @EventHandler
-    public void onLeavesDecay(LeavesDecayEvent event) {
+    public void onLeavesDecay(LeavesDecayEvent event) throws InterruptedException {
         if (disabling) { return; }
         Block block = event.getBlock();
 
@@ -84,12 +93,15 @@ public class EventListener implements Listener {
         }
 
         if (plugin.monitorBlocks.contains(block)) {
+            while (plugin.isUpdatingChecks) {
+                Thread.sleep(25);
+            }
             plugin.monitorBlocks.remove(block);
         }
     }
 
     @EventHandler
-    public void onBlockBurn(BlockBurnEvent event) {
+    public void onBlockBurn(BlockBurnEvent event) throws InterruptedException {
         if (disabling) { return; }
 
         Block block = event.getBlock();
@@ -99,6 +111,9 @@ public class EventListener implements Listener {
         }
 
         if (plugin.monitorBlocks.contains(block)) {
+            while (plugin.isUpdatingChecks) {
+                Thread.sleep(25);
+            }
             plugin.monitorBlocks.remove(block);
         }
     }
@@ -113,6 +128,7 @@ public class EventListener implements Listener {
         if (plugin.cleanChunks.contains(chunk)) {
             return;
         }
+
         while (plugin.isUpdatingChecks) {
             Thread.sleep(25);
         }
@@ -135,7 +151,7 @@ public class EventListener implements Listener {
         plugin.cleanChunks.add(chunk);
     }
 
-    public void setDisabling(boolean setTo) {
+    void setDisabling(boolean setTo) {
         this.disabling = setTo;
     }
 }

@@ -27,10 +27,10 @@ import java.util.HashSet;
  * Created by ArdiMaster on 24.12.15.
  */
 public class BlockMonitor extends BukkitRunnable {
-    SunBurnsTrees plugin;
-    HashSet<Block> blocks, removeBlocks;
+    private SunBurnsTrees plugin;
+    private HashSet<Block> blocks, removeBlocks;
 
-    public BlockMonitor(SunBurnsTrees mainClass) {
+    BlockMonitor(SunBurnsTrees mainClass) {
         plugin = mainClass;
     }
 

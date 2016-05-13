@@ -53,13 +53,17 @@ public class SunBurnsTrees extends JavaPlugin {
     @Override
     public void onEnable() {
         loadCfg();
-        // loadBlocks();
+        if (!checkChunksCompletely) {
+            loadBlocks();
+        }
         listener = new EventListener(this);
         getServer().getPluginManager().registerEvents(listener, this);
 
         blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
         blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5 * 20);
-        // blocksSaver = new BlocksSaver(this).runTaskTimer(this, 31 * 20, 30 * 20);
+        if (!checkChunksCompletely) {
+            blocksSaver = new BlocksSaver(this).runTaskTimer(this, 31 * 20, 30 * 20);
+        }
     }
 
     @Override
@@ -67,9 +71,13 @@ public class SunBurnsTrees extends JavaPlugin {
         listener.setDisabling(true);
         blockChecker.cancel();
         blockMonitor.cancel();
-        // blocksSaver.cancel();
+        if (!checkChunksCompletely) {
+            blocksSaver.cancel();
+        }
         saveCfg();
-        // saveBlocks();
+        if (!checkChunksCompletely) {
+            saveBlocks();
+        }
     }
 
     void log(Level level, String message) {
@@ -101,6 +109,11 @@ public class SunBurnsTrees extends JavaPlugin {
 
         if (config.contains("experimental.checkChunksCompletely")) {
             checkChunksCompletely = config.getBoolean("experimental.checkChunksCompletely");
+            if (checkChunksCompletely) {
+                log(Level.WARNING, "Complete checking of chunks upon load (experimantal) enabled. This increases " +
+                        "memory consumption and may cause lags. Blocks discovered with checkChunksCompletely enabled " +
+                        "WILL NOT be saved to blocks.yml.");
+            }
         }
 
         List<String> loadingMaterials = config.getStringList("materials");
@@ -247,20 +260,4 @@ public class SunBurnsTrees extends JavaPlugin {
             log(Level.WARNING, "Unable to save blocks file!");
         }
     }
-
-    /* void checkChunkColumn(String worldName, int chunkX,  int chunkZ, int columnX, int columnZ, int columnMaxY) {
-        Chunk chunk = getServer().getWorld(worldName).getChunkAt(chunkX, chunkZ);
-        for (int y = 0; y <= columnMaxY; y++) {
-            Block block = chunk.getBlock(columnX, y, columnZ);
-            if (burningMaterials.contains(block.getType())) {
-                monitorBlocks.add(block);
-            }
-        }
-    }
-
-    void addCleanChunk(String worldName, int chunkX, int chunkZ) {
-        cleanChunks.add(getServer().getWorld(worldName).getChunkAt(chunkX, chunkZ));
-        currentDone++;
-        getServer().broadcastMessage("Finished checking chunk at X=" + chunkX + " Z=" + chunkZ);
-    } */
 }
