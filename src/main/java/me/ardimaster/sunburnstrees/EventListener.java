@@ -120,11 +120,13 @@ public class EventListener implements Listener {
         }
 
         ChunkSnapshot snapshot = chunk.getChunkSnapshot();
+        int highest;
+        Block block;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                int highest = snapshot.getHighestBlockYAt(x, z);
+                highest = snapshot.getHighestBlockYAt(x, z);
                 for (int y = 1; y <= highest; y++) {
-                    Block block = chunk.getBlock(x, y, z);
+                    block = chunk.getBlock(x, y, z);
                     if (plugin.burningMaterials.contains(block.getType())) {
                         plugin.monitorBlocks.add(block);
                     }
