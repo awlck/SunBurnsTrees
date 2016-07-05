@@ -114,6 +114,8 @@ public class SunBurnsTrees extends JavaPlugin {
                         "memory consumption and may cause lags. Blocks discovered with checkChunksCompletely enabled " +
                         "WILL NOT be saved to blocks.yml.");
             }
+        } else {
+            checkChunksCompletely = false;
         }
 
         List<String> loadingMaterials = config.getStringList("materials");
