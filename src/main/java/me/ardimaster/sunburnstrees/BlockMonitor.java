@@ -21,25 +21,26 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Iterator;
+import java.util.HashSet;
 
 /**
  * Created by ArdiMaster on 24.12.15.
  */
 public class BlockMonitor extends BukkitRunnable {
-    SunBurnsTrees plugin;
+    private SunBurnsTrees plugin;
+    private HashSet<Block> blocks, removeBlocks;
 
-    public BlockMonitor(SunBurnsTrees mainClass) {
+    BlockMonitor(SunBurnsTrees mainClass) {
         plugin = mainClass;
     }
 
     @Override
     public void run() {
-        for (Iterator<Block> iterator = plugin.monitorBlocks.iterator(); iterator.hasNext();) {
-            Block  block = iterator.next();
-
+        blocks = (HashSet<Block>) plugin.monitorBlocks.clone();
+        removeBlocks = new HashSet<>();
+        for (Block block : blocks) {
             if (!plugin.burningMaterials.contains(block.getType())) {
-                iterator.remove();
+                removeBlocks.add(block);
                 continue;
             }
 
@@ -48,5 +49,14 @@ public class BlockMonitor extends BukkitRunnable {
                 block.getRelative(BlockFace.UP).setType(Material.FIRE);
             }
         }
+
+        plugin.isUpdatingChecks = true;
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        plugin.monitorBlocks.removeAll(removeBlocks);
+        plugin.isUpdatingChecks = false;
     }
 }

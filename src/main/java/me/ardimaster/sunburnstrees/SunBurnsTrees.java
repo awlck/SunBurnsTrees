@@ -16,6 +16,7 @@
 
 package me.ardimaster.sunburnstrees;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,10 +39,13 @@ import java.util.logging.Level;
  */
 public class SunBurnsTrees extends JavaPlugin {
     // protected int burnLightLevel;
-    protected int minTime, maxTime;
-    protected HashSet<Block> needsCheck = new HashSet<>();
-    protected HashSet<Block> monitorBlocks = new HashSet<>();
-    protected HashSet<Material> burningMaterials = new HashSet<>();
+    int minTime, maxTime;
+    HashSet<Block> needsCheck = new HashSet<>();
+    HashSet<Block> monitorBlocks = new HashSet<>();
+    HashSet<Material> burningMaterials = new HashSet<>();
+    HashSet<Chunk> cleanChunks = new HashSet<>();
+    boolean checkChunksCompletely = false;
+    boolean isUpdatingChecks = false;
     private BukkitTask blockMonitor, blockChecker, blocksSaver;
     private EventListener listener;
 
@@ -49,13 +53,17 @@ public class SunBurnsTrees extends JavaPlugin {
     @Override
     public void onEnable() {
         loadCfg();
-        loadBlocks();
+        if (!checkChunksCompletely) {
+            loadBlocks();
+        }
         listener = new EventListener(this);
         getServer().getPluginManager().registerEvents(listener, this);
 
         blockMonitor = new BlockMonitor(this).runTaskTimer(this, 16 * 20, 5 * 20);
         blockChecker = new BlockChecker(this).runTaskTimer(this, 20 * 20, 5 * 20);
-        blocksSaver = new BlocksSaver(this).runTaskTimer(this, 31 * 20, 30 * 20);
+        if (!checkChunksCompletely) {
+            blocksSaver = new BlocksSaver(this).runTaskTimer(this, 31 * 20, 30 * 20);
+        }
     }
 
     @Override
@@ -63,16 +71,20 @@ public class SunBurnsTrees extends JavaPlugin {
         listener.setDisabling(true);
         blockChecker.cancel();
         blockMonitor.cancel();
-        blocksSaver.cancel();
+        if (!checkChunksCompletely) {
+            blocksSaver.cancel();
+        }
         saveCfg();
-        saveBlocks();
+        if (!checkChunksCompletely) {
+            saveBlocks();
+        }
     }
 
     void log(Level level, String message) {
         getLogger().log(level, message);
     }
 
-    void loadCfg() {
+    private void loadCfg() {
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             log(Level.INFO, "No configuration file found, using defaults.");
@@ -95,13 +107,24 @@ public class SunBurnsTrees extends JavaPlugin {
             maxTime = 7698;
         }
 
+        if (config.contains("experimental.checkChunksCompletely")) {
+            checkChunksCompletely = config.getBoolean("experimental.checkChunksCompletely");
+            if (checkChunksCompletely) {
+                log(Level.WARNING, "Complete checking of chunks upon load (experimantal) enabled. This increases " +
+                        "memory consumption and may cause lags. Blocks discovered with checkChunksCompletely enabled " +
+                        "WILL NOT be saved to blocks.yml.");
+            }
+        } else {
+            checkChunksCompletely = false;
+        }
+
         List<String> loadingMaterials = config.getStringList("materials");
         for (String mat : loadingMaterials) {
             burningMaterials.add(Material.getMaterial(mat));
         }
     }
 
-    void saveCfg() {
+    private void saveCfg() {
         File configFile = new File(getDataFolder(), "config.yml");
 
         if (!Files.exists(getDataFolder().toPath())) {
@@ -129,6 +152,8 @@ public class SunBurnsTrees extends JavaPlugin {
         config.set("worldTime.start", minTime);
         config.set("worldTime.end", maxTime);
 
+        config.set("experimental.checkChunksCompletely", checkChunksCompletely);
+
         ArrayList<String> materialSave = new ArrayList<>();
         for (Material mat : burningMaterials) {
             materialSave.add(mat.toString());
@@ -142,7 +167,7 @@ public class SunBurnsTrees extends JavaPlugin {
         }
     }
 
-    void loadBlocks() {
+    private void loadBlocks() {
         File blockFile = new File(getDataFolder(), "blocks.yml");
         if (!blockFile.exists()) {
             log(Level.INFO, "No blocks file found, using empty.");
