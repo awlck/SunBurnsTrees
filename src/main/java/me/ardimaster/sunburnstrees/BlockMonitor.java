@@ -46,7 +46,7 @@ public class BlockMonitor extends BukkitRunnable {
 
             Block aboveBlock = block.getRelative(BlockFace.UP);
             long time = block.getWorld().getTime();
-            if (aboveBlock.getLightFromSky() == 14 && time >= plugin.minTime && time <= plugin.maxTime) {
+            if (aboveBlock.getLightFromSky() >= 14 && time >= plugin.minTime && time <= plugin.maxTime) {
                 aboveBlock.setType(Material.FIRE);
             }
         }
