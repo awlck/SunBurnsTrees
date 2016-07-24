@@ -74,7 +74,6 @@ public class SunBurnsTrees extends JavaPlugin {
         if (!checkChunksCompletely) {
             blocksSaver.cancel();
         }
-        saveCfg();
         if (!checkChunksCompletely) {
             saveBlocks();
         }
@@ -86,6 +85,7 @@ public class SunBurnsTrees extends JavaPlugin {
 
     private void loadCfg() {
         File configFile = new File(getDataFolder(), "config.yml");
+        boolean willSave = false;
         if (!configFile.exists()) {
             log(Level.INFO, "No configuration file found, using defaults.");
             // burnLightLevel = 14;
@@ -93,6 +93,7 @@ public class SunBurnsTrees extends JavaPlugin {
             burningMaterials.add(Material.LEAVES_2);
             minTime = 4284;
             maxTime = 7689;
+            saveCfg();
             return;
         }
 
@@ -105,6 +106,7 @@ public class SunBurnsTrees extends JavaPlugin {
         } else {
             minTime = 4284;
             maxTime = 7698;
+            willSave = true;
         }
 
         if (config.contains("experimental.checkChunksCompletely")) {
@@ -116,11 +118,16 @@ public class SunBurnsTrees extends JavaPlugin {
             }
         } else {
             checkChunksCompletely = false;
+            willSave = true;
         }
 
         List<String> loadingMaterials = config.getStringList("materials");
         for (String mat : loadingMaterials) {
             burningMaterials.add(Material.getMaterial(mat));
+        }
+
+        if (willSave) {
+            saveCfg();
         }
     }
 
