@@ -1,5 +1,5 @@
 name: SunBurnsTrees
-version: 0.9.2
+version: 0.10-SNAPSHOT
 main: me.ardimaster.sunburnstrees.SunBurnsTrees
 author: ArdiMaster
 load: startup
